@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.wms.basedata.customer.mapper.WmsCustomerMapper">
+    
+    <resultMap type="WmsCustomer" id="WmsCustomerResult">
+        <result property="cid"    column="cid"    />
+        <result property="cname"    column="cname"    />
+        <result property="ctype"    column="ctype"    />
+        <result property="caddress"    column="caddress"    />
+        <result property="ceo"    column="ceo"    />
+        <result property="cphone"    column="cphone"    />
+    </resultMap>
+
+    <sql id="selectWmsCustomerVo">
+        select cid, cname, ctype, caddress, ceo, cphone from wms_customer
+    </sql>
+
+    <select id="selectWmsCustomerList" parameterType="WmsCustomer" resultMap="WmsCustomerResult">
+        <include refid="selectWmsCustomerVo"/>
+        <where>  
+            <if test="cname != null  and cname != ''"> and cname like concat('%', #{cname}, '%')</if>
+            <if test="ctype != null  and ctype != ''"> and ctype = #{ctype}</if>
+            <if test="caddress != null  and caddress != ''"> and caddress = #{caddress}</if>
+            <if test="ceo != null  and ceo != ''"> and ceo = #{ceo}</if>
+            <if test="cphone != null  and cphone != ''"> and cphone = #{cphone}</if>
+        </where>
+    </select>
+    
+    <select id="selectWmsCustomerById" parameterType="Long" resultMap="WmsCustomerResult">
+        <include refid="selectWmsCustomerVo"/>
+        where cid = #{cid}
+    </select>
+        
+    <insert id="insertWmsCustomer" parameterType="WmsCustomer" useGeneratedKeys="true" keyProperty="cid">
+        insert into wms_customer
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="cname != null  and cname != ''">cname,</if>
+            <if test="ctype != null  and ctype != ''">ctype,</if>
+            <if test="caddress != null  and caddress != ''">caddress,</if>
+            <if test="ceo != null  and ceo != ''">ceo,</if>
+            <if test="cphone != null  and cphone != ''">cphone,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="cname != null  and cname != ''">#{cname},</if>
+            <if test="ctype != null  and ctype != ''">#{ctype},</if>
+            <if test="caddress != null  and caddress != ''">#{caddress},</if>
+            <if test="ceo != null  and ceo != ''">#{ceo},</if>
+            <if test="cphone != null  and cphone != ''">#{cphone},</if>
+         </trim>
+    </insert>
+
+    <update id="updateWmsCustomer" parameterType="WmsCustomer">
+        update wms_customer
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="cname != null  and cname != ''">cname = #{cname},</if>
+            <if test="ctype != null  and ctype != ''">ctype = #{ctype},</if>
+            <if test="caddress != null  and caddress != ''">caddress = #{caddress},</if>
+            <if test="ceo != null  and ceo != ''">ceo = #{ceo},</if>
+            <if test="cphone != null  and cphone != ''">cphone = #{cphone},</if>
+        </trim>
+        where cid = #{cid}
+    </update>
+
+    <delete id="deleteWmsCustomerById" parameterType="Long">
+        delete from wms_customer where cid = #{cid}
+    </delete>
+
+    <delete id="deleteWmsCustomerByIds" parameterType="String">
+        delete from wms_customer where cid in 
+        <foreach item="cid" collection="array" open="(" separator="," close=")">
+            #{cid}
+        </foreach>
+    </delete>
+    
+</mapper>
